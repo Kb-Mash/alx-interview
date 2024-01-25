@@ -9,7 +9,6 @@ count = 0
 
 
 def print_all():
-    """function to print all"""
     print("File size:", total_file_size)
     for key, value in status_dict.items():
         if value:
@@ -19,14 +18,18 @@ def print_all():
 try:
     for line in sys.stdin:
         count += 1
+        line = line.split()
         try:
-            line = line.split(" ")
-            status_code = int(line[7])
-            file_size = int(line[8])
-        except (IndexError, TypeError):
+            file_size = int(line[-1])
+            total_file_size += file_size
+        except (IndexError, ValueError, TypeError):
             continue
-        status_dict[status_code] += 1
-        total_file_size += file_size
+        try:
+            status_code = int(line[-2])
+            if status_code in status_dict.keys():
+                status_dict[status_code] += 1
+        except (IndexError, ValueError, TypeError):
+            continue
         if count == 10:
             print_all()
             count = 0
